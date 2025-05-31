@@ -127,7 +127,7 @@
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
             
-            document.getElementById(elementId).innerHTML = ${days} дней ${hours} часов ${minutes} минут ${seconds} секунд;
+            document.getElementById(elementId).innerHTML = ${days} дней ${hours} часов ${Math.floor(minutes)} минут ${seconds} секунд;
         }
         
         // Создаем целевые даты для каждого часового пояса
