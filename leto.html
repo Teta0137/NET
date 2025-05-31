@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>До 1 июня 2025 года</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -27,7 +25,6 @@
             text-align: center;
             margin-bottom: 30px;
             font-size: 2.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         .timer-box {
             background: white;
@@ -35,11 +32,6 @@
             padding: 15px 20px;
             margin-bottom: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-        .timer-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
         .timezone-name {
             font-weight: bold;
@@ -77,12 +69,6 @@
             pointer-events: none;
             display: none;
         }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #7f8c8d;
-            font-size: 0.9em;
-        }
     </style>
 </head>
 <body>
@@ -92,71 +78,67 @@
         <div id="timer-kaliningrad" class="timer-box">
             <div class="timezone-name">Калининград</div>
             <div class="timezone-offset">UTC+2</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-moscow" class="timer-box">
             <div class="timezone-name">Москва</div>
             <div class="timezone-offset">UTC+3</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-samara" class="timer-box">
             <div class="timezone-name">Самара</div>
             <div class="timezone-offset">UTC+4</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-ekb" class="timer-box">
             <div class="timezone-name">Екатеринбург</div>
             <div class="timezone-offset">UTC+5</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-omsk" class="timer-box">
             <div class="timezone-name">Омск</div>
             <div class="timezone-offset">UTC+6</div>
-            <div class="countdown">Загрузка...</div>
-            </div>
+            <div class="countdown">00:00:00:00</div>
+        </div>
         
         <div id="timer-krasnoyarsk" class="timer-box">
             <div class="timezone-name">Красноярск</div>
             <div class="timezone-offset">UTC+7</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-irkutsk" class="timer-box">
             <div class="timezone-name">Иркутск</div>
             <div class="timezone-offset">UTC+8</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-yakutsk" class="timer-box">
             <div class="timezone-name">Якутск</div>
             <div class="timezone-offset">UTC+9</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-vladivostok" class="timer-box">
             <div class="timezone-name">Владивосток</div>
             <div class="timezone-offset">UTC+10</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-magadan" class="timer-box">
             <div class="timezone-name">Магадан</div>
             <div class="timezone-offset">UTC+11</div>
-            <div class="countdown">Загрузка...</div>
+            <div class="countdown">00:00:00:00</div>
         </div>
         
         <div id="timer-kamchatka" class="timer-box">
             <div class="timezone-name">Камчатка</div>
             <div class="timezone-offset">UTC+12</div>
-            <div class="countdown">Загрузка...</div>
-        </div>
-        
-        <div class="footer">
-            Таймеры обновляются в реальном времени
+            <div class="countdown">00:00:00:00</div>
         </div>
     </div>
 
@@ -165,35 +147,45 @@
     <audio id="celebration-sound" src="yra.mp3" preload="auto"></audio>
 
     <script>
-        // Целевая дата - 1 июня 2025 года
-        const TARGET_DATE = '2025-06-01T00:00:00';
-        
-        // Часовые пояса России
-        const TIMEZONES = [
-            { id: 'kaliningrad', name: 'Europe/Kaliningrad', offset: 'UTC+2' },
-            { id: 'moscow', name: 'Europe/Moscow', offset: 'UTC+3' },
-            { id: 'samara', name: 'Europe/Samara', offset: 'UTC+4' },
-            { id: 'ekb', name: 'Asia/Yekaterinburg', offset: 'UTC+5' },
-            { id: 'omsk', name: 'Asia/Omsk', offset: 'UTC+6' },
-            { id: 'krasnoyarsk', name: 'Asia/Krasnoyarsk', offset: 'UTC+7' },
-            { id: 'irkutsk', name: 'Asia/Irkutsk', offset: 'UTC+8' },
-            { id: 'yakutsk', name: 'Asia/Yakutsk', offset: 'UTC+9' },
-            { id: 'vladivostok', name: 'Asia/Vladivostok', offset: 'UTC+10' },
-            { id: 'magadan', name: 'Asia/Magadan', offset: 'UTC+11' },
-            { id: 'kamchatka', name: 'Asia/Kamchatka', offset: 'UTC+12' }
-        ];
-        
+        // Целевая дата - 1 июня 2025 года, 00:00:00 UTC
+        const TARGET_DATE = new Date('2025-06-01T00:00:00Z');
         let celebrationTriggered = false;
         
-        // Функция для обновления таймеров
+        // Часовые пояса России с их смещениями (в часах)
+        const TIMEZONES = [
+            { id: 'kaliningrad', name: 'Калининград', offset: 2 },
+            { id: 'moscow', name: 'Москва', offset: 3 },
+            { id: 'samara', name: 'Самара', offset: 4 },
+            { id: 'ekb', name: 'Екатеринбург', offset: 5 },
+            { id: 'omsk', name: 'Омск', offset: 6 },
+            { id: 'krasnoyarsk', name: 'Красноярск', offset: 7 },
+            { id: 'irkutsk', name: 'Иркутск', offset: 8 },
+            { id: 'yakutsk', name: 'Якутск', offset: 9 },
+            { id: 'vladivostok', name: 'Владивосток', offset: 10 },
+            { id: 'magadan', name: 'Магадан', offset: 11 },
+            { id: 'kamchatka', name: 'Камчатка', offset: 12 }
+        ];
+        
+        // Функция для форматирования времени
+        function formatTime(ms) {
+            const seconds = Math.floor(ms / 1000) % 60;
+            const minutes = Math.floor(ms / (1000 * 60)) % 60;
+            const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
+            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+            
+            return ${days}д ${hours}ч ${minutes}м ${seconds}с;
+        }
+        
+        // Обновление всех таймеров
         function updateCountdowns() {
-            const now = moment();
+            const now = new Date();
             let anyCompleted = false;
             
             TIMEZONES.forEach(tz => {
-                const localTime = now.tz(tz.name);
-                const targetTime = moment.tz(TARGET_DATE, tz.name);
-                const diff = targetTime.diff(localTime);
+                // Рассчитываем время для часового пояса
+                const offsetMs = tz.offset * 60 * 60 * 1000;
+                const localTarget = new Date(TARGET_DATE.getTime() - offsetMs);
+                const diff = localTarget - now;
                 
                 const countdownElement = document.querySelector(#${tz.id} .countdown);
                 
@@ -202,13 +194,7 @@
                     countdownElement.className = "countdown completed";
                     anyCompleted = true;
                 } else {
-                    const duration = moment.duration(diff);
-                    const days = Math.floor(duration.asDays());
-                    const hours = duration.hours();
-                    const minutes = duration.minutes();
-                    const seconds = duration.seconds();
-                    
-                    countdownElement.textContent = ${days} дн ${hours} ч ${minutes} мин ${seconds} сек;
+                    countdownElement.textContent = formatTime(diff);
                     countdownElement.className = "countdown";
                 }
             });
@@ -312,9 +298,11 @@
             setInterval(updateCountdowns, 1000);
             
             // Проверить, не наступила ли уже целевая дата
-            TIMEZONES.forEach(tz => {const localTime = moment().tz(tz.name);
-                const targetTime = moment.tz(TARGET_DATE, tz.name);
-                if (targetTime.isBefore(localTime)) {
+            const now = new Date();
+            TIMEZONES.forEach(tz => {
+                const offsetMs = tz.offset * 60 * 60 * 1000;
+                const localTarget = new Date(TARGET_DATE.getTime() - offsetMs);
+                if (localTarget <= now) {
                     celebrationTriggered = true;
                     startCelebration();
                 }
@@ -322,7 +310,7 @@
         }
         
         // Запустить при загрузке страницы
-        window.onload = init;
+        window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
