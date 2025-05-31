@@ -37,8 +37,11 @@
         .timezone-title {
             font-weight: bold;
             font-size: 1.2em;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #2c3e50;
+        }
+        .flipdown {
+            margin: 0 auto;
         }
         #confetti-canvas {
             position: fixed;
@@ -62,6 +65,10 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+        .loading {
+            color: #7f8c8d;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -70,57 +77,79 @@
         
         <div class="timezone-card">
             <div class="timezone-title">Калининград (UTC+2)</div>
-            <div id="flipdown-kaliningrad" class="flipdown"></div>
+            <div id="flipdown-kaliningrad" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Москва (UTC+3)</div>
-            <div id="flipdown-moscow" class="flipdown"></div>
+            <div id="flipdown-moscow" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Самара (UTC+4)</div>
-            <div id="flipdown-samara" class="flipdown"></div>
+            <div id="flipdown-samara" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Екатеринбург (UTC+5)</div>
-            <div id="flipdown-ekb" class="flipdown"></div>
+            <div id="flipdown-ekb" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Омск (UTC+6)</div>
-            <div id="flipdown-omsk" class="flipdown"></div>
+            <div id="flipdown-omsk" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Красноярск (UTC+7)</div>
-            <div id="flipdown-krasnoyarsk" class="flipdown"></div>
+            <div id="flipdown-krasnoyarsk" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Иркутск (UTC+8)</div>
-            <div id="flipdown-irkutsk" class="flipdown"></div>
+            <div id="flipdown-irkutsk" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Якутск (UTC+9)</div>
-            <div id="flipdown-yakutsk" class="flipdown"></div>
+            <div id="flipdown-yakutsk" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Владивосток (UTC+10)</div>
-            <div id="flipdown-vladivostok" class="flipdown"></div>
+            <div id="flipdown-vladivostok" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Магадан (UTC+11)</div>
-            <div id="flipdown-magadan" class="flipdown"></div>
+            <div id="flipdown-magadan" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
         
         <div class="timezone-card">
             <div class="timezone-title">Камчатка (UTC+12)</div>
-            <div id="flipdown-kamchatka" class="flipdown"></div>
+            <div id="flipdown-kamchatka" class="flipdown">
+                <div class="loading">Загрузка таймера...</div>
+            </div>
         </div>
     </div>
 
@@ -150,13 +179,14 @@
         ];
 
         // Создаем таймеры для каждого часового пояса
-        let flipdownInstances = [];
         let celebrationTriggered = false;
 
         function initCountdowns() {
             const now = Date.now();
             
             TIMEZONES.forEach(tz => {
+                const container = document.getElementById(flipdown-${tz.id});
+                
                 // Рассчитываем время для часового пояса
                 const offsetMs = tz.offset * 60 * 60 * 1000;
                 const targetTime = TARGET_DATE_UTC - offsetMs;
@@ -164,13 +194,15 @@
                 
                 if (diff <= 0) {
                     // Если дата уже наступила
-                    document.getElementById(flipdown-${tz.id}).innerHTML = 
-                        '<div class="completed-message">1 июня 2025 года наступило!</div>';
+                    container.innerHTML = '<div class="completed-message">1 июня 2025 года наступило!</div>';
                     if (!celebrationTriggered) {
                         startCelebration();
                         celebrationTriggered = true;
                     }
                 } else {
+                    // Удаляем сообщение о загрузке
+                    container.innerHTML = '';
+                    
                     // Создаем красивый таймер
                     const flipdown = new FlipDown(
                         Math.floor(targetTime / 1000),
@@ -183,15 +215,12 @@
                     
                     // Добавляем обработчик завершения
                     flipdown.ifEnded(() => {
-                        document.getElementById(flipdown-${tz.id}).innerHTML = 
-                            '<div class="completed-message">1 июня 2025 года наступило!</div>';
+                        container.innerHTML = '<div class="completed-message">1 июня 2025 года наступило!</div>';
                         if (!celebrationTriggered) {
                             startCelebration();
                             celebrationTriggered = true;
                         }
                     });
-                    
-                    flipdownInstances.push(flipdown);
                 }
             });
         }
@@ -205,6 +234,7 @@
             
             // Воспроизвести звук
             const audio = document.getElementById('celebration-sound');
+            
             // Разрешаем воспроизведение по клику (требование браузеров)
             document.body.addEventListener('click', function() {
                 audio.play().catch(e => console.log("Ошибка воспроизведения:", e));
