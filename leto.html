@@ -184,7 +184,7 @@
             TIMEZONES.forEach(tz => {
                 // Рассчитываем время для часового пояса
                 const offsetMs = tz.offset * 60 * 60 * 1000;
-                const localTarget = new Date(TARGET_DATE.getTime() - offsetMs);
+                const localTarget = new Date(TARGET_DATE.getTime() + offsetMs);
                 const diff = localTarget - now;
                 
                 const countdownElement = document.querySelector(#${tz.id} .countdown);
