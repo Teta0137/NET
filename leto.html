@@ -78,67 +78,67 @@
         <div id="timer-kaliningrad" class="timer-box">
             <div class="timezone-name">Калининград</div>
             <div class="timezone-offset">UTC+2</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-moscow" class="timer-box">
             <div class="timezone-name">Москва</div>
             <div class="timezone-offset">UTC+3</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-samara" class="timer-box">
             <div class="timezone-name">Самара</div>
             <div class="timezone-offset">UTC+4</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-ekb" class="timer-box">
             <div class="timezone-name">Екатеринбург</div>
             <div class="timezone-offset">UTC+5</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-omsk" class="timer-box">
             <div class="timezone-name">Омск</div>
             <div class="timezone-offset">UTC+6</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-krasnoyarsk" class="timer-box">
             <div class="timezone-name">Красноярск</div>
             <div class="timezone-offset">UTC+7</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-irkutsk" class="timer-box">
             <div class="timezone-name">Иркутск</div>
             <div class="timezone-offset">UTC+8</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-yakutsk" class="timer-box">
             <div class="timezone-name">Якутск</div>
             <div class="timezone-offset">UTC+9</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-vladivostok" class="timer-box">
             <div class="timezone-name">Владивосток</div>
             <div class="timezone-offset">UTC+10</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-magadan" class="timer-box">
             <div class="timezone-name">Магадан</div>
             <div class="timezone-offset">UTC+11</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
         
         <div id="timer-kamchatka" class="timer-box">
             <div class="timezone-name">Камчатка</div>
             <div class="timezone-offset">UTC+12</div>
-            <div class="countdown">00:00:00:00</div>
+            <div class="countdown">Идёт расчёт...</div>
         </div>
     </div>
 
@@ -168,10 +168,11 @@
         
         // Функция для форматирования времени
         function formatTime(ms) {
-            const seconds = Math.floor(ms / 1000) % 60;
-            const minutes = Math.floor(ms / (1000 * 60)) % 60;
-            const hours = Math.floor(ms / (1000 * 60 * 60)) % 24;
-            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+            const totalSeconds = Math.floor(ms / 1000);
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
             
             return ${days}д ${hours}ч ${minutes}м ${seconds}с;
         }
@@ -184,7 +185,7 @@
             TIMEZONES.forEach(tz => {
                 // Рассчитываем время для часового пояса
                 const offsetMs = tz.offset * 60 * 60 * 1000;
-                const localTarget = new Date(TARGET_DATE.getTime() + offsetMs);
+                const localTarget = new Date(TARGET_DATE.getTime() - offsetMs);
                 const diff = localTarget - now;
                 
                 const countdownElement = document.querySelector(#${tz.id} .countdown);
@@ -214,10 +215,16 @@
             
             // Воспроизвести звук
             const audio = document.getElementById('celebration-sound');
-            audio.play().catch(e => console.log("Автовоспроизведение звука заблокировано:", e));
+            // Добавляем обработчик клика для разблокировки аудио
+            document.body.addEventListener('click', function() {
+                audio.play().catch(e => console.log("Ошибка воспроизведения:", e));
+            }, { once: true });
+            
+            // Пытаемся воспроизвести сразу (может не сработать без взаимодействия пользователя)
+            audio.play().catch(e => console.log("Автовоспроизведение заблокировано, ждём клика"));
         }
         
-        // Инициализация конфетти
+        // Инициализация конфетти (упрощённая версия)
         function initConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
@@ -225,60 +232,46 @@
             canvas.height = window.innerHeight;
             
             const particles = [];
-            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
             
-            function createParticle() {
-                return {
+            // Создаём 100 частиц конфетти
+            for (let i = 0; i < 100; i++) {
+                particles.push({
                     x: Math.random() * canvas.width,
-                    y: -10,
-                    size: Math.random() * 12 + 3,
+                    y: Math.random() * -canvas.height,
+                    size: Math.random() * 10 + 5,
                     color: colors[Math.floor(Math.random() * colors.length)],
                     speed: Math.random() * 3 + 2,
                     angle: Math.random() * Math.PI * 2,
                     rotation: Math.random() * 0.2 - 0.1
-                };
+                });
             }
             
-            function updateParticles() {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
                     p.y += p.speed;
                     p.angle += p.rotation;
                     p.x += Math.sin(p.angle) * 1;
                     
+                    // Если частица ушла за нижнюю границу, возвращаем её наверх
                     if (p.y > canvas.height) {
-                        particles.splice(i, 1);
-                        i--;
+                        p.y = -10;
+                        p.x = Math.random() * canvas.width;
                     }
-                }
-                
-                while (particles.length < 100) {
-                    particles.push(createParticle());
-                }
-            }
-            
-            function drawParticles() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                particles.forEach(p => {
+                    
+                    // Рисуем частицу
                     ctx.save();
                     ctx.translate(p.x, p.y);
                     ctx.rotate(p.angle);
                     ctx.fillStyle = p.color;
                     ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
                     ctx.restore();
-                });
-            }
-            
-            function animate() {
-                updateParticles();
-                drawParticles();
+                }
+                
                 requestAnimationFrame(animate);
-            }
-            
-            // Создать начальные частицы
-            for (let i = 0; i < 50; i++) {
-                particles.push(createParticle());
             }
             
             animate();
