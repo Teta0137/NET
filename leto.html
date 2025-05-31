@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>До лета в России!</title>
+  <style>
+    body {
+      background: #000;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    .timer {
+      font-size: 1.2rem;
+      margin: 1rem auto;
+      border: 1px solid #888;
+      padding: 1rem;
+      border-radius: 10px;
+      width: fit-content;
+    }
+    #fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      color: #fff;
+      font-size: 3rem;
+    }
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Обратный отсчёт до лета — 1 июня 2025</h1>
+  <div id="timers"></div>
+  <button onclick="enableAudio()">Включить звук</button>
+
+  <div id="fireworks">🎆 С ЛЕТОМ! 🎆</div>
+  <audio id="yra" src="yra.mp3"></audio>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const timezones = [
+      { name: "Калининград (UTC+2)", offset: 2 },
+      { name: "Москва (UTC+3)", offset: 3 },
+      { name: "Самара (UTC+4)", offset: 4 },
+      { name: "Екатеринбург (UTC+5)", offset: 5 },
+      { name: "Омск (UTC+6)", offset: 6 },
+      { name: "Красноярск (UTC+7)", offset: 7 },
+      { name: "Иркутск (UTC+8)", offset: 8 },
+      { name: "Якутск (UTC+9)", offset: 9 },
+      { name: "Владивосток (UTC+10)", offset: 10 },
+      { name: "Магадан (UTC+11)", offset: 11 },
+      { name: "Камчатка (UTC+12)", offset: 12 }
+    ];
+
+    const timersContainer = document.getElementById("timers");
+    let summerStarted = false;
+
+    timezones.forEach(zone => {
+      const div = document.createElement("div");
+      div.className = "timer";
+      div.innerHTML = <strong>${zone.name}:</strong> <span id="tz-${zone.offset}">Загрузка...</span>;
+      timersContainer.appendChild(div);
+    });
+
+    function updateTimers() {
+      const nowUTC = new Date();
+
+      timezones.forEach(zone => {
+        const el = document.getElementById(tz-${zone.offset});
+
+        // Целевая дата в UTC с учётом часового пояса
+        const target = new Date(Date.UTC(2025, 5, 1, 0, 0, 0) - (zone.offset * 60 * 60 * 1000));
+        const diff = target.getTime() - nowUTC.getTime();
+
+        if (diff <= 0) {
+          el.textContent = "Лето!";
+          if (!summerStarted) {
+            showFireworks();
+            summerStarted = true;
+          }
+        } else {
+          const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const m = Math.floor((diff / (1000 * 60)) % 60);
+          const s = Math.floor((diff / 1000) % 60);
+          el.textContent = ${d}д ${h}ч ${m}м ${s}с;
+        }
+      });
+    }
+
+    function showFireworks() {
+      document.getElementById("fireworks").style.display = "flex";
+      const audio = document.getElementById("yra");
+      audio.play().catch(() => {});
+      launchFireworks();
+    }
+
+    function enableAudio() {
+      const audio = document.getElementById("yra");
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        alert("Звук готов к воспроизведению!");
+      }).catch(() => {
+        alert("Нажмите ещё раз или разрешите звук в браузере.");
+      });
+    }
+
+    updateTimers();
+    setInterval(updateTimers, 1000);
+
+    // --- Fireworks effect ---
+    function launchFireworks() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      function Particle(x, y, dx, dy, color) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.color = color;
+        this.life = 100;
+        this.update = function () {
+          this.x += this.dx;
+          this.y += this.dy;
+          this.dy += 0.1;
+          this.life--;
+        };
+        this.draw = function () {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        };
+      }
+
+      function createFirework() {
+        const colors = ["#ff0", "#f0f", "#0ff", "#f00", "#0f0", "#00f"];
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height / 2;
+        for (let i = 0; i < 100; i++) {
+          const angle = Math.random() * 2 * Math.PI;
+          const speed = Math.random() * 5;
+          const dx = Math.cos(angle) * speed;
+          const dy = Math.sin(angle) * speed;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          particles.push(new Particle(x, y, dx, dy, color));
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.2)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update();
+          particles[i].draw();
+          if (particles[i].life <= 0) particles.splice(i, 1);
+        }
+        requestAnimationFrame(animate);
+      }
+
+      setInterval(createFirework, 500);
+      animate();
+    }
+  </script>
+</body>
+</html>
