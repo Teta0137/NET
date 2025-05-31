@@ -4,33 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>До 1 июня 2025 года</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f8ff;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        .timer-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .timezone {
-            font-weight: bold;
+        h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-        .timer {
-            font-size: 24px;
+        .timer-box {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .timer-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .timezone-name {
+            font-weight: bold;
+            color: #34495e;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        .timezone-offset {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .countdown {
+            font-size: 1.3em;
             color: #e74c3c;
             font-weight: bold;
+            margin-top: 8px;
+        }
+        .completed {
+            color: #27ae60;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         #confetti-canvas {
             position: fixed;
@@ -42,8 +77,11 @@
             pointer-events: none;
             display: none;
         }
-        h1 {
-            color: #2c3e50;
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -51,59 +89,74 @@
     <div class="container">
         <h1>До 1 июня 2025 года осталось:</h1>
         
-        <div class="timer-container">
-            <div class="timezone">Москва (UTC+3)</div>
-            <div id="timer-moscow" class="timer"></div>
+        <div id="timer-kaliningrad" class="timer-box">
+            <div class="timezone-name">Калининград</div>
+            <div class="timezone-offset">UTC+2</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Калининград (UTC+2)</div>
-            <div id="timer-kaliningrad" class="timer"></div>
+        <div id="timer-moscow" class="timer-box">
+            <div class="timezone-name">Москва</div>
+            <div class="timezone-offset">UTC+3</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Самара (UTC+4)</div>
-            <div id="timer-samara" class="timer"></div>
+        <div id="timer-samara" class="timer-box">
+            <div class="timezone-name">Самара</div>
+            <div class="timezone-offset">UTC+4</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Екатеринбург (UTC+5)</div>
-            <div id="timer-ekb" class="timer"></div>
+        <div id="timer-ekb" class="timer-box">
+            <div class="timezone-name">Екатеринбург</div>
+            <div class="timezone-offset">UTC+5</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Омск (UTC+6)</div>
-            <div id="timer-omsk" class="timer"></div>
+        <div id="timer-omsk" class="timer-box">
+            <div class="timezone-name">Омск</div>
+            <div class="timezone-offset">UTC+6</div>
+            <div class="countdown">Загрузка...</div>
+            </div>
+        
+        <div id="timer-krasnoyarsk" class="timer-box">
+            <div class="timezone-name">Красноярск</div>
+            <div class="timezone-offset">UTC+7</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Красноярск (UTC+7)</div>
-            <div id="timer-krasnoyarsk" class="timer"></div>
+        <div id="timer-irkutsk" class="timer-box">
+            <div class="timezone-name">Иркутск</div>
+            <div class="timezone-offset">UTC+8</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Иркутск (UTC+8)</div>
-            <div id="timer-irkutsk" class="timer"></div>
+        <div id="timer-yakutsk" class="timer-box">
+            <div class="timezone-name">Якутск</div>
+            <div class="timezone-offset">UTC+9</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Якутск (UTC+9)</div>
-            <div id="timer-yakutsk" class="timer"></div>
+        <div id="timer-vladivostok" class="timer-box">
+            <div class="timezone-name">Владивосток</div>
+            <div class="timezone-offset">UTC+10</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Владивосток (UTC+10)</div>
-            <div id="timer-vladivostok" class="timer"></div>
+        <div id="timer-magadan" class="timer-box">
+            <div class="timezone-name">Магадан</div>
+            <div class="timezone-offset">UTC+11</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Магадан (UTC+11)</div>
-            <div id="timer-magadan" class="timer"></div>
+        <div id="timer-kamchatka" class="timer-box">
+            <div class="timezone-name">Камчатка</div>
+            <div class="timezone-offset">UTC+12</div>
+            <div class="countdown">Загрузка...</div>
         </div>
         
-        <div class="timer-container">
-            <div class="timezone">Камчатка (UTC+12)</div>
-            <div id="timer-kamchatka" class="timer"></div>
+        <div class="footer">
+            Таймеры обновляются в реальном времени
         </div>
     </div>
 
@@ -112,111 +165,91 @@
     <audio id="celebration-sound" src="yra.mp3" preload="auto"></audio>
 
     <script>
-        // Функция для обновления таймера
-        function updateTimer(targetDate, elementId) {
-            const now = new Date();
-            const diff = targetDate - now;
-            
-            if (diff <= 0) {
-                document.getElementById(elementId).innerHTML = "Поздравляем! 1 июня 2025 года наступило!";
-                checkCelebration();
-                return;
-            }
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.getElementById(elementId).innerHTML = ${days} дней ${hours} часов ${Math.floor(minutes)} минут ${seconds} секунд;
-        }
+        // Целевая дата - 1 июня 2025 года
+        const TARGET_DATE = '2025-06-01T00:00:00';
         
-        // Создаем целевые даты для каждого часового пояса
-        const timeZones = {
-            'kaliningrad': { offset: 2, element: 'timer-kaliningrad' },
-            'moscow': { offset: 3, element: 'timer-moscow' },
-            'samara': { offset: 4, element: 'timer-samara' },
-            'ekb': { offset: 5, element: 'timer-ekb' },
-            'omsk': { offset: 6, element: 'timer-omsk' },
-            'krasnoyarsk': { offset: 7, element: 'timer-krasnoyarsk' },
-            'irkutsk': { offset: 8, element: 'timer-irkutsk' },
-            'yakutsk': { offset: 9, element: 'timer-yakutsk' },
-            'vladivostok': { offset: 10, element: 'timer-vladivostok' },
-            'magadan': { offset: 11, element: 'timer-magadan' },
-            'kamchatka': { offset: 12, element: 'timer-kamchatka' }
-        };
+        // Часовые пояса России
+        const TIMEZONES = [
+            { id: 'kaliningrad', name: 'Europe/Kaliningrad', offset: 'UTC+2' },
+            { id: 'moscow', name: 'Europe/Moscow', offset: 'UTC+3' },
+            { id: 'samara', name: 'Europe/Samara', offset: 'UTC+4' },
+            { id: 'ekb', name: 'Asia/Yekaterinburg', offset: 'UTC+5' },
+            { id: 'omsk', name: 'Asia/Omsk', offset: 'UTC+6' },
+            { id: 'krasnoyarsk', name: 'Asia/Krasnoyarsk', offset: 'UTC+7' },
+            { id: 'irkutsk', name: 'Asia/Irkutsk', offset: 'UTC+8' },
+            { id: 'yakutsk', name: 'Asia/Yakutsk', offset: 'UTC+9' },
+            { id: 'vladivostok', name: 'Asia/Vladivostok', offset: 'UTC+10' },
+            { id: 'magadan', name: 'Asia/Magadan', offset: 'UTC+11' },
+            { id: 'kamchatka', name: 'Asia/Kamchatka', offset: 'UTC+12' }
+        ];
         
-        // Проверяем, наступило ли 1 июня в каком-либо часовом поясе
-        let celebrationStarted = false;
+        let celebrationTriggered = false;
         
-        function checkCelebration() {
-            if (celebrationStarted) return;
+        // Функция для обновления таймеров
+        function updateCountdowns() {
+            const now = moment();
+            let anyCompleted = false;
             
-            const now = new Date();
-            // Проверяем, наступило ли 1 июня в каком-либо часовом поясе
-            for (const [key, zone] of Object.entries(timeZones)) {
-                const utcTime = now.getTime() + now.getTimezoneOffset() * 60000;
-                const zoneTime = new Date(utcTime + zone.offset * 3600000);
+            TIMEZONES.forEach(tz => {
+                const localTime = now.tz(tz.name);
+                const targetTime = moment.tz(TARGET_DATE, tz.name);
+                const diff = targetTime.diff(localTime);
                 
-                if (zoneTime.getMonth() === 5 && zoneTime.getDate() === 1 && zoneTime.getFullYear() === 2025) {
-                    startCelebration();
-                    celebrationStarted = true;
-                    break;
+                const countdownElement = document.querySelector(#${tz.id} .countdown);
+                
+                if (diff <= 0) {
+                    countdownElement.textContent = "Наступило 1 июня 2025 года!";
+                    countdownElement.className = "countdown completed";
+                    anyCompleted = true;
+                } else {
+                    const duration = moment.duration(diff);
+                    const days = Math.floor(duration.asDays());
+                    const hours = duration.hours();
+                    const minutes = duration.minutes();
+                    const seconds = duration.seconds();
+                    
+                    countdownElement.textContent = ${days} дн ${hours} ч ${minutes} мин ${seconds} сек;
+                    countdownElement.className = "countdown";
                 }
+            });
+            
+            if (anyCompleted && !celebrationTriggered) {
+                startCelebration();
+                celebrationTriggered = true;
             }
         }
         
-        // Запускаем празднование
+        // Запуск праздничного эффекта
         function startCelebration() {
-            // Показываем салют
+            // Показать конфетти
             const canvas = document.getElementById('confetti-canvas');
             canvas.style.display = 'block';
-            startConfetti();
+            initConfetti();
             
-            // Воспроизводим звук
+            // Воспроизвести звук
             const audio = document.getElementById('celebration-sound');
             audio.play().catch(e => console.log("Автовоспроизведение звука заблокировано:", e));
         }
         
-        // Инициализация и обновление таймеров
-        function initTimers() {
-            // Целевая дата - 1 июня 2025 года, 00:00:00 UTC
-            const targetUTC = new Date(Date.UTC(2025, 5, 1, 0, 0, 0));
-            
-            // Создаем целевые даты для каждого часового пояса
-            for (const [key, zone] of Object.entries(timeZones)) {
-                const targetDate = new Date(targetUTC.getTime() - zone.offset * 3600000);
-                
-                // Обновляем таймер сразу
-                updateTimer(targetDate, zone.element);
-                
-                // Устанавливаем интервал обновления (1 секунда)
-                setInterval(() => updateTimer(targetDate, zone.element), 1000);
-            }
-            
-            // Проверяем празднование каждую секунду
-            setInterval(checkCelebration, 1000);
-        }
-        
-        // Код для салюта (confetti)
-        function startConfetti() {
+        // Инициализация конфетти
+        function initConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             
             const particles = [];
-            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
             
             function createParticle() {
                 return {
                     x: Math.random() * canvas.width,
-                    y: -20,
-                    size: Math.random() * 10 + 5,
+                    y: -10,
+                    size: Math.random() * 12 + 3,
                     color: colors[Math.floor(Math.random() * colors.length)],
                     speed: Math.random() * 3 + 2,
                     angle: Math.random() * Math.PI * 2,
-                    rotation: Math.random() * 0.2 - 0.1,
-                    rotationSpeed: Math.random() * 0.01 - 0.005
+                    rotation: Math.random() * 0.2 - 0.1
                 };
             }
             
@@ -224,7 +257,7 @@
                 for (let i = 0; i < particles.length; i++) {
                     const p = particles[i];
                     p.y += p.speed;
-                    p.angle += p.rotationSpeed;
+                    p.angle += p.rotation;
                     p.x += Math.sin(p.angle) * 1;
                     
                     if (p.y > canvas.height) {
@@ -233,8 +266,7 @@
                     }
                 }
                 
-                // Добавляем новые частицы
-                if (Math.random() < 0.3) {
+                while (particles.length < 100) {
                     particles.push(createParticle());
                 }
             }
@@ -242,14 +274,14 @@
             function drawParticles() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                for (const p of particles) {
+                particles.forEach(p => {
                     ctx.save();
                     ctx.translate(p.x, p.y);
                     ctx.rotate(p.angle);
                     ctx.fillStyle = p.color;
                     ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
                     ctx.restore();
-                }
+                });
             }
             
             function animate() {
@@ -258,22 +290,39 @@
                 requestAnimationFrame(animate);
             }
             
-            // Создаем начальные частицы
+            // Создать начальные частицы
             for (let i = 0; i < 50; i++) {
                 particles.push(createParticle());
             }
             
             animate();
             
-            // Ресайз canvas при изменении размера окна
             window.addEventListener('resize', () => {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             });
         }
         
-        // Запускаем таймеры при загрузке страницы
-        window.onload = initTimers;
+        // Инициализация таймеров
+        function init() {
+            // Настроить все таймеры
+            updateCountdowns();
+            
+            // Обновлять каждую секунду
+            setInterval(updateCountdowns, 1000);
+            
+            // Проверить, не наступила ли уже целевая дата
+            TIMEZONES.forEach(tz => {const localTime = moment().tz(tz.name);
+                const targetTime = moment.tz(TARGET_DATE, tz.name);
+                if (targetTime.isBefore(localTime)) {
+                    celebrationTriggered = true;
+                    startCelebration();
+                }
+            });
+        }
+        
+        // Запустить при загрузке страницы
+        window.onload = init;
     </script>
 </body>
 </html>
